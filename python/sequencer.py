@@ -2,6 +2,8 @@ from pylab import *
 from acp_iface import *
 from time import sleep, time as now
 from struct import unpack
+import calib_iface
+import pyaudio
 
 
 # Iface
@@ -22,11 +24,20 @@ times = [0, 2.5, 3.0, 4.5, 6.5]
 plucks = [0.2, 0.4, 0.2, 0.4, 0.2]
 ptimes = [0, 1.2, 1.7, 2.2, 2.7]
 
+p = pyaudio.PyAudio()
+stream = p.open(format=pyaudio.paFloat32,
+		channels=1,
+		rate=44100,
+		input=True,
+		output=True)
+
 t0 = now()
 pt0 = now()
 cnt = 0
 pcnt = 0
 while True:
+  stream.write( stream.read(64) )
+  
   #cnt = cnt % len(notes) 
   # If cnt > len(notes) reset count and time
   if cnt > len(notes)-1:
