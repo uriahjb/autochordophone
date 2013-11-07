@@ -29,6 +29,12 @@ class Stepper:
     self.position = 0
   
   def set_limits( self, accel, v_min, v_max ):
+    '''
+    Set Stepper Limits in units of steps:
+      - Acceleration
+      - Velocity Min
+      - Velocity Max
+    '''
     self.v_min = v_min
     self.v_max = v_max
     self.accel_limit = accel
@@ -39,18 +45,19 @@ class Stepper:
     self.iface.write( self._msg_fmt['set_position'], [int(position),] )
 
 class Servo:
-  _msg_fmt = {'set_position' : [6, 'f']
-	     ,'calibrate' : [7, 'fi'] }
+  _msg_fmt = {'set_position' : [6, 'Bf']
+	     ,'calibrate' : [7, 'Bfi'] }
 
-  def __init__( self, iface ):
+  def __init__( self, id, iface ):
     self.iface = iface
+    self.id = id
     self.position = 0 
 
   def calibrate( self, rng, degrees ):
-    self.iface.write( self._msg_fmt['calibrate'], [rng, int(degrees)] )
+    self.iface.write( self._msg_fmt['calibrate'], [self.id, rng, int(degrees)] )
 
   def set_position( self, position ):
-    self.iface.write( self._msg_fmt['set_position'], [position,] )
+    self.iface.write( self._msg_fmt['set_position'], [self.id, position,] )
 
 
 if __name__ == '__main__':
